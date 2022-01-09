@@ -38,6 +38,7 @@ using namespace std;
 StHttpClient::StHttpClient(){
     socket = new StSocket();
     connected_url = NULL;
+    chunked = false;
 }
 
 StHttpClient::~StHttpClient(){
@@ -158,8 +159,8 @@ int StHttpClient::ParseResponseBodyData(HttpUrl* url, string* response, size_t b
         }
         
         body_left -= nread;
-        Info("read url(%s) content partial %"PRId64"/%"PRId64"", 
-            url->GetUrl(), http_header.content_length - body_left, http_header.content_length);
+        Info("read url(%s) content partial %"PRIu64"/%"PRId64"", 
+            url->GetUrl(), (chunked ? body_left : http_header.content_length - body_left), http_header.content_length);
     }
     
     return ret;
@@ -195,12 +196,16 @@ int StHttpClient::ParseResponseHeader(string* response, int& body_received){
 
         // check header size.
         if(http_header.nread != 0){
-            body_received = nread - nparsed;
+            if (-1 == http_header.content_length) {
+                chunked = true;
+            } else {
+                body_received = nread - nparsed;
+            }
             
             Info("http header parsed, size=%d, content-length=%"PRId64", body-received=%d", 
                 http_header.nread, http_header.content_length, body_received);
                 
-            if(response != NULL && body_received > 0){
+            if(response != NULL && body_received > 0) {
                 response->append(buf + nparsed, body_received);
             }
 

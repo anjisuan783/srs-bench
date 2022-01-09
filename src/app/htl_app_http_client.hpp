@@ -38,6 +38,7 @@ private:
     std::string connected_ip;
     HttpUrl* connected_url;
     StSocket* socket;
+    bool chunked;
 private:
     http_parser http_header;
 public:

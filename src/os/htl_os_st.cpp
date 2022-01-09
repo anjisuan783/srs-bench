@@ -116,7 +116,7 @@ void StStatistic::DoReport(double sleep_ms){
         if(tasks > 0){
             avarage_duration /= tasks;
         }
-        LReport("[report] [%d] threads:%d alive:%d duration:%.0f tduration:%.0f nread:%.2f nwrite:%.2f "
+        LReport("[report] [%d] threads:%d alive:%d duration:%.0f tduration:%.0f nread:%.3f nwrite:%.3f "
             "tasks:%"PRId64" etasks:%"PRId64" stasks:%"PRId64" estasks:%"PRId64,
             getpid(), threads, alive, duration/1000.0, avarage_duration, read_mbps, write_mbps, 
             tasks, err_tasks, sub_tasks, err_sub_tasks);
