@@ -159,12 +159,21 @@ func apiRtcRequest(ctx context.Context, apiPath, r, offer string) (string, error
 	}
 
 	// Build api url.
+	scheme := u.Scheme
+	if scheme == "webrtc" {
+		scheme = "https"
+	}
+	
 	host := u.Host
 	if !strings.Contains(host, ":") {
-		host += ":1985"
+		if scheme == "https" {
+			host += ":443"
+		} else {
+		    host += ":80"
+		}
 	}
 
-	api := fmt.Sprintf("http://%v", host)
+	api := fmt.Sprintf("%v://%v", scheme, host)
 	if !strings.HasPrefix(apiPath, "/") {
 		api += "/"
 	}
