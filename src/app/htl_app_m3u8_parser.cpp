@@ -161,7 +161,7 @@ int HlsM3u8Parser::ParseM3u8Data(HttpUrl* url, string m3u8, vector<M3u8TS>& ts_o
         // #EXT-X-STREAM-INF:BANDWIDTH=3000000
         // http://192.168.13.108:28080/gh.b0.upaiyun.com/app01/stream01.m3u8
         if (line.startswith("#EXT-X-STREAM-INF:", &value)) {
-            variant = data.strip().getline();
+            variant = url->Resolve(data.strip().getline());
             return ret;
         }
         
@@ -182,6 +182,7 @@ int HlsM3u8Parser::ParseM3u8Data(HttpUrl* url, string m3u8, vector<M3u8TS>& ts_o
         
         if(!line.startswith("#")){
             ts_object.ts_url = url->Resolve(line.c_str());
+            Trace("ts=%s", ts_object.ts_url.c_str());
             ts_objects.push_back(ts_object);
             continue;
         }
